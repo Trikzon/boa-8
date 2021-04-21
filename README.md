@@ -11,7 +11,7 @@ TODO
 
 ## Emulator
 
-Depends on winit and opengl for graphics.
+Depends on glutin and opengl for graphics.
 
 # [BOA-8](./boa-8/)
 An unfinished and abandonded CHIP-8 emulator written in python with pygame.

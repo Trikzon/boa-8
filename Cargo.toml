@@ -1,0 +1,11 @@
+[package]
+name = "chirp-8"
+version = "0.1.0"
+authors = ["Trikzon <trikzon@protonmail.com>"]
+edition = "2018"
+
+[dependencies]
+glutin = "0.26.0"
+
+[build-dependencies]
+gl_generator = "0.14.0"
