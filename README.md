@@ -1,5 +1,18 @@
 # CHIRP-8
-A CHIP-8 emulator written in rust with the bevy engine.
+A CHIP-8 suite written in rust including a compiler, decompiler, and emulator.
 
-### [BOA-8](./boa-8/)
-An unfinished CHIP-8 emulator written in python with pygame.
+## Compiler
+
+TODO
+
+## Decompiler
+
+TODO
+
+## Emulator
+
+Depends on winit and opengl for graphics.
+
+# [BOA-8](./boa-8/)
+An unfinished and abandonded CHIP-8 emulator written in python with pygame.
+
