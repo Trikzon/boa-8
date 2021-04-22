@@ -1,5 +1,5 @@
 use crate::render::gl;
-use crate::render::{ProgramBuilder, ShaderError, ShaderProgram};
+use crate::render::{Buffer, ProgramBuilder, ShaderError, ShaderProgram, VertexArray};
 use glutin::{
     dpi::{LogicalSize, PhysicalSize},
     event_loop::EventLoop,
@@ -27,6 +27,8 @@ pub struct Display {
     clear_color: (f32, f32, f32),
     gl: gl::Gl,
     shader: ShaderProgram,
+    vertex_array: VertexArray,
+    indice_count: usize,
 }
 
 impl Display {
@@ -54,14 +56,34 @@ impl Display {
         let gl = gl::Gl::load_with(|ptr| context.get_proc_address(ptr) as *const _);
 
         let mut shader = ProgramBuilder::new().with_combo(TEMP_SHADER)?.build(&gl)?;
+
+        shader.bind();
         shader.define_uniform("uColor")?;
-        shader.upload_uniform("uColor", &1.0)?;
+        shader.upload_uniform("uColor", &(1.0, 1.0, 1.0))?;
+        shader.unbind();
+
+        let vertices: [f32; 12] = [
+            -1.0, 1.0, 0.0, // top left
+            -1.0, -1.0, 0.0, // bottom left
+            1.0, -1.0, 0.0, // bottom right
+            1.0, 1.0, 0.0, // top right
+        ];
+        let indices = [0, 1, 3, 1, 2, 3];
+
+        let vertices_buffer = Buffer::new_array_buffer(&gl, &vertices, 3);
+        let indices_buffer = Buffer::new_element_buffer(&gl, &indices);
+
+        let mut vertex_array = VertexArray::new(&gl);
+        vertex_array.put_element_buffer(indices_buffer);
+        vertex_array.put_array_buffer(0, vertices_buffer);
 
         Ok(Self {
             context,
             clear_color: (0.0, 0.0, 0.0),
             gl,
             shader,
+            vertex_array,
+            indice_count: indices.len(),
         })
     }
 
@@ -75,6 +97,10 @@ impl Display {
     }
 
     pub fn update(&self) -> Result<(), DisplayError> {
+        self.context
+            .swap_buffers()
+            .map_err(|_| DisplayError::SwapBuffers)?;
+
         self.gl.set_clear_color(
             self.clear_color.0,
             self.clear_color.1,
@@ -83,11 +109,22 @@ impl Display {
         );
         self.gl
             .clear(&[gl::ClearFlag::COLOR_BUFFER, gl::ClearFlag::DEPTH_BUFFER]);
-        self.context
-            .swap_buffers()
-            .map_err(|_| DisplayError::SwapBuffers)?;
 
         Ok(())
+    }
+
+    pub fn render(&self) {
+        self.shader.bind();
+        self.vertex_array.bind();
+        self.vertex_array.enable_attrib_arrays();
+
+        self.gl.draw_elements(self.indice_count);
+
+        self.vertex_array.disable_attrib_arrays();
+        self.vertex_array.unbind();
+        self.shader.unbind();
+
+        self.gl.debug_print_error();
     }
 }
 

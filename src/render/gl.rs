@@ -30,6 +30,12 @@ pub struct Gl {
     gl: Rc<bindings::Gl>,
 }
 
+impl std::fmt::Debug for Gl {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Gl").finish()
+    }
+}
+
 impl Gl {
     pub fn load_with<F>(load_fn: F) -> Self
     where
@@ -37,6 +43,13 @@ impl Gl {
     {
         Self {
             gl: Rc::new(bindings::Gl::load_with(load_fn)),
+        }
+    }
+
+    pub fn debug_print_error(&self) {
+        let error = unsafe { self.gl.GetError() };
+        if error != bindings::NO_ERROR {
+            println!("GL Error: {}", error);
         }
     }
 }
@@ -71,11 +84,12 @@ impl Gl {
     }
 }
 
+#[derive(Debug)]
 pub struct ShaderId {
     id: u32,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug, PartialOrd, PartialEq)]
 #[repr(u32)]
 pub enum ShaderType {
     Vertex,
@@ -179,6 +193,7 @@ impl Gl {
     }
 }
 
+#[derive(Debug)]
 pub struct ProgramId {
     id: u32,
 }
@@ -237,6 +252,7 @@ impl Gl {
     }
 }
 
+#[derive(Debug)]
 pub struct UniformLocationId {
     id: i32,
 }
@@ -280,6 +296,7 @@ impl UploadableUniform for (f32, f32, f32) {
     }
 }
 
+#[derive(Debug)]
 pub struct VertexArrayId {
     id: u32,
 }
@@ -308,7 +325,7 @@ impl Gl {
     }
 
     #[inline]
-    pub fn vertex_attrib_pointer_float(
+    pub fn vertex_attrib_pointer_f(
         &self,
         location: usize,
         size: usize,
@@ -337,15 +354,17 @@ impl Gl {
     }
 
     #[inline]
-    pub fn disable_vertex_attrib(&self) {
-        unsafe { self.gl.EnableVertexAttribArray(0) };
+    pub fn disable_vertex_attrib(&self, location: usize) {
+        unsafe { self.gl.DisableVertexAttribArray(location as u32) };
     }
 }
 
+#[derive(Debug)]
 pub struct BufferId {
     id: u32,
 }
 
+#[derive(Clone, Copy, Debug, PartialOrd, PartialEq)]
 pub enum BufferType {
     ArrayBuffer,
     ElementArrayBuffer,
@@ -380,7 +399,7 @@ impl Gl {
 
     #[inline]
     pub fn unbind_buffer(&self, buffer_type: BufferType) {
-        unsafe { self.gl.BindBuffer(buffer_type.value(), 0) }
+        unsafe { self.gl.BindBuffer(buffer_type.value(), 0) };
     }
 
     #[inline]
@@ -392,6 +411,20 @@ impl Gl {
                 data.as_ptr() as *const bindings::types::GLvoid,
                 bindings::STATIC_DRAW,
             )
-        }
+        };
+    }
+}
+
+impl Gl {
+    #[inline]
+    pub fn draw_elements(&self, indice_count: usize) {
+        unsafe {
+            self.gl.DrawElements(
+                bindings::TRIANGLES,
+                indice_count as i32,
+                bindings::UNSIGNED_INT,
+                std::ptr::null(),
+            )
+        };
     }
 }

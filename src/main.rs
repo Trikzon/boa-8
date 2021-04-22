@@ -26,7 +26,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 _ => (),
             },
             Event::MainEventsCleared => display.request_redraw(),
-            Event::RedrawRequested(_) => display.update().unwrap(),
+            Event::RedrawRequested(_) => {
+                display.update().unwrap();
+                display.render();
+            }
             _ => (),
         }
     });
