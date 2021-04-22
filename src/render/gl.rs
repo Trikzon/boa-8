@@ -256,20 +256,27 @@ impl Gl {
             Ok(UniformLocationId { id: location })
         }
     }
+}
 
-    #[inline]
-    pub fn upload_uniform_location_1f(&self, uniform: &UniformLocationId, value: f32) {
-        unsafe { self.gl.Uniform1f(uniform.id, value) };
+pub trait UploadableUniform {
+    fn upload(&self, gl: &Gl, uniform_location: &UniformLocationId);
+}
+
+impl UploadableUniform for f32 {
+    fn upload(&self, gl: &Gl, uniform_location: &UniformLocationId) {
+        unsafe { gl.gl.Uniform1f(uniform_location.id, *self) };
     }
+}
 
-    #[inline]
-    pub fn upload_uniform_location_2f(&self, uniform: &UniformLocationId, value: (f32, f32)) {
-        unsafe { self.gl.Uniform2f(uniform.id, value.0, value.1) };
+impl UploadableUniform for (f32, f32) {
+    fn upload(&self, gl: &Gl, uniform_location: &UniformLocationId) {
+        unsafe { gl.gl.Uniform2f(uniform_location.id, self.0, self.1) };
     }
+}
 
-    #[inline]
-    pub fn upload_uniform_location_3f(&self, uniform: &UniformLocationId, value: (f32, f32, f32)) {
-        unsafe { self.gl.Uniform3f(uniform.id, value.0, value.1, value.2) };
+impl UploadableUniform for (f32, f32, f32) {
+    fn upload(&self, gl: &Gl, uniform_location: &UniformLocationId) {
+        unsafe { gl.gl.Uniform3f(uniform_location.id, self.0, self.1, self.2) };
     }
 }
 

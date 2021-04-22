@@ -1,4 +1,5 @@
 use crate::render::gl;
+use crate::render::{ProgramBuilder, ShaderError, ShaderProgram};
 use glutin::{
     dpi::{LogicalSize, PhysicalSize},
     event_loop::EventLoop,
@@ -15,12 +16,17 @@ pub enum DisplayError {
     ContextCurrent,
     #[error("failed to swap glutin window's buffers")]
     SwapBuffers,
+    #[error("encountered a shader error")]
+    ShaderError(#[from] ShaderError),
 }
+
+const TEMP_SHADER: &str = include_str!("./shader/chip-8.glsl");
 
 pub struct Display {
     context: ContextWrapper<PossiblyCurrent, Window>,
     clear_color: (f32, f32, f32),
     gl: gl::Gl,
+    shader: ShaderProgram,
 }
 
 impl Display {
@@ -47,10 +53,15 @@ impl Display {
 
         let gl = gl::Gl::load_with(|ptr| context.get_proc_address(ptr) as *const _);
 
+        let mut shader = ProgramBuilder::new().with_combo(TEMP_SHADER)?.build(&gl)?;
+        shader.define_uniform("uColor")?;
+        shader.upload_uniform("uColor", &1.0)?;
+
         Ok(Self {
             context,
             clear_color: (0.0, 0.0, 0.0),
             gl,
+            shader,
         })
     }
 

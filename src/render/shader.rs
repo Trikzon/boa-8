@@ -10,6 +10,8 @@ pub enum ShaderError {
     InvalidTypeHeader(String),
     #[error("shader builder is missing shader type: {0}")]
     MissingShaderType(u32),
+    #[error("attempted to upload to an undefined uniform: {0}")]
+    UndefinedUniform(String),
     #[error("encountered a gl error")]
     GlError(#[from] gl::GlError),
 }
@@ -41,7 +43,7 @@ impl ShaderProgram {
         })
     }
 
-    pub fn compile_shader(
+    fn compile_shader(
         gl: &gl::Gl,
         shader_type: gl::ShaderType,
         source: String,
@@ -54,10 +56,7 @@ impl ShaderProgram {
         Ok(id)
     }
 
-    pub fn link_shaders(
-        gl: &gl::Gl,
-        shaders: &[gl::ShaderId],
-    ) -> Result<gl::ProgramId, ShaderError> {
+    fn link_shaders(gl: &gl::Gl, shaders: &[gl::ShaderId]) -> Result<gl::ProgramId, ShaderError> {
         let program = gl.create_program()?;
 
         for shader in shaders {
@@ -81,6 +80,27 @@ impl ShaderProgram {
     pub fn unbind(&self) {
         self.gl.unbind_program();
     }
+
+    pub fn define_uniform<S: Into<String>>(&mut self, name: S) -> Result<(), ShaderError> {
+        let name = name.into();
+        let uniform_location = self.gl.get_uniform_location(&self.program_id, &name)?;
+        self.uniform_locations.insert(name.into(), uniform_location);
+        Ok(())
+    }
+
+    pub fn upload_uniform<S: Into<String>>(
+        &mut self,
+        name: S,
+        value: &impl gl::UploadableUniform,
+    ) -> Result<(), ShaderError> {
+        let name = name.into();
+        let uniform_location = self
+            .uniform_locations
+            .get(&name)
+            .ok_or(ShaderError::UndefinedUniform(name))?;
+        value.upload(&self.gl, uniform_location);
+        Ok(())
+    }
 }
 
 impl Drop for ShaderProgram {
@@ -96,7 +116,7 @@ pub struct ProgramBuilder {
 }
 
 impl ProgramBuilder {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             vertex: None,
             fragment: None,
