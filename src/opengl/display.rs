@@ -1,3 +1,4 @@
+use crate::opengl::gl;
 use glutin::{
     dpi::{LogicalSize, PhysicalSize},
     event_loop::EventLoop,
@@ -5,9 +6,6 @@ use glutin::{
     ContextBuilder, ContextWrapper, PossiblyCurrent,
 };
 use thiserror::Error;
-
-use super::bindings;
-use super::bindings::Gl;
 
 #[derive(Debug, Error)]
 pub enum DisplayError {
@@ -22,7 +20,7 @@ pub enum DisplayError {
 pub struct Display {
     context: ContextWrapper<PossiblyCurrent, Window>,
     clear_color: (f32, f32, f32),
-    gl: Gl,
+    gl: gl::Gl,
 }
 
 impl Display {
@@ -47,7 +45,7 @@ impl Display {
                 .map_err(|_| DisplayError::ContextCurrent)?
         };
 
-        let gl = Gl::load_with(|ptr| context.get_proc_address(ptr) as *const _);
+        let gl = gl::Gl::load_with(|ptr| context.get_proc_address(ptr) as *const _);
 
         Ok(Self {
             context,
@@ -58,6 +56,7 @@ impl Display {
 
     pub fn resize(&self, width: u32, height: u32) {
         self.context.resize(PhysicalSize::new(width, height));
+        self.gl.set_view_port(0, 0, width, height);
     }
 
     pub fn request_redraw(&self) {
@@ -65,15 +64,14 @@ impl Display {
     }
 
     pub fn update(&self) -> Result<(), DisplayError> {
-        unsafe {
-            self.gl.ClearColor(
-                self.clear_color.0,
-                self.clear_color.1,
-                self.clear_color.2,
-                1.0,
-            );
-            self.gl.Clear(bindings::COLOR_BUFFER_BIT);
-        }
+        self.gl.set_clear_color(
+            self.clear_color.0,
+            self.clear_color.1,
+            self.clear_color.2,
+            1.0,
+        );
+        self.gl
+            .clear(&[gl::ClearFlag::COLOR_BUFFER, gl::ClearFlag::DEPTH_BUFFER]);
         self.context
             .swap_buffers()
             .map_err(|_| DisplayError::SwapBuffers)?;
