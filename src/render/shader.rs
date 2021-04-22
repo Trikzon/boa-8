@@ -1,4 +1,4 @@
-use crate::opengl::gl;
+use crate::render::gl;
 use std::collections::HashMap;
 use thiserror::Error;
 

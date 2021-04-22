@@ -1,6 +1,6 @@
-mod opengl;
+mod render;
 
-use crate::opengl::DisplayBuilder;
+use crate::render::DisplayBuilder;
 use glutin::{
     event::{Event, WindowEvent},
     event_loop::{ControlFlow, EventLoop},

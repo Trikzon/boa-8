@@ -1,4 +1,4 @@
-use crate::opengl::bindings;
+use crate::render::bindings;
 use bitflags::bitflags;
 use std::ffi::CString;
 use std::rc::Rc;

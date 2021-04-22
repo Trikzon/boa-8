@@ -1,4 +1,4 @@
-use crate::opengl::gl;
+use crate::render::gl;
 use glutin::{
     dpi::{LogicalSize, PhysicalSize},
     event_loop::EventLoop,
