@@ -58,8 +58,28 @@ impl Display {
         let mut shader = ProgramBuilder::new().with_combo(TEMP_SHADER)?.build(&gl)?;
 
         shader.bind();
-        shader.define_uniform("uColor")?;
-        shader.upload_uniform("uColor", &(1.0, 1.0, 1.0))?;
+        shader.define_uniform("uPixels")?;
+        let mut pixels = [0; 64];
+        pixels[0] = 0b01111100000000000000000000000000;
+        pixels[1] = 0b00010000000000000000000000000000;
+        pixels[2] = 0b01111100000000000000000000000000;
+        pixels[3] = 0b00000000000000000000000000000000;
+        pixels[4] = 0b01111100000000000000000000000000;
+        pixels[5] = 0b01010100000000000000000000000000;
+        pixels[6] = 0b01000100000000000000000000000000;
+        pixels[7] = 0b00000000000000000000000000000000;
+        pixels[8] = 0b01111100000000000000000000000000;
+        pixels[9] = 0b00000100000000000000000000000000;
+        pixels[10] = 0b00000100000000000000000000000000;
+        pixels[11] = 0b00000000000000000000000000000000;
+        pixels[12] = 0b01111100000000000000000000000000;
+        pixels[13] = 0b00000100000000000000000000000000;
+        pixels[14] = 0b00000100000000000000000000000000;
+        pixels[15] = 0b00000000000000000000000000000000;
+        pixels[16] = 0b01111100000000000000000000000000;
+        pixels[17] = 0b01000100000000000000000000000000;
+        pixels[18] = 0b01111100000000000000000000000000;
+        shader.upload_uniform("uPixels", &pixels)?;
         shader.unbind();
 
         let vertices: [f32; 12] = [
@@ -68,14 +88,17 @@ impl Display {
             1.0, -1.0, 0.0, // bottom right
             1.0, 1.0, 0.0, // top right
         ];
+        let pixel_pos: [f32; 8] = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0];
         let indices = [0, 1, 3, 1, 2, 3];
 
         let vertices_buffer = Buffer::new_array_buffer(&gl, &vertices, 3);
+        let pixel_pos_buffer = Buffer::new_array_buffer(&gl, &pixel_pos, 2);
         let indices_buffer = Buffer::new_element_buffer(&gl, &indices);
 
         let mut vertex_array = VertexArray::new(&gl);
         vertex_array.put_element_buffer(indices_buffer);
         vertex_array.put_array_buffer(0, vertices_buffer);
+        vertex_array.put_array_buffer(1, pixel_pos_buffer);
 
         Ok(Self {
             context,

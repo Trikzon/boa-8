@@ -12,7 +12,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let display = DisplayBuilder::new()
         .with_title("CHIRP-8")
-        .with_size(640, 480)
+        .with_size(640, 320)
         .build(&event_loop)?;
 
     event_loop.run(move |event, _, control_flow| {

@@ -17,7 +17,7 @@ pub enum GlError {
     LinkProgram(String),
 
     #[error("uniform name is invalid: {0}")]
-    InvalidUniformname(String),
+    InvalidUniformName(String),
 
     #[error("failed to convert &str into CString because it contains an interior nul byte")]
     NulByteInStr(#[from] std::ffi::NulError),
@@ -267,7 +267,7 @@ impl Gl {
         let c_name = convert_str_into_c_string(name)?;
         let location = unsafe { self.gl.GetUniformLocation(program_id.id, c_name.as_ptr()) };
         if location == -1 {
-            Err(GlError::InvalidUniformname(name.to_string()))
+            Err(GlError::InvalidUniformName(name.to_string()))
         } else {
             Ok(UniformLocationId { id: location })
         }
@@ -293,6 +293,12 @@ impl UploadableUniform for (f32, f32) {
 impl UploadableUniform for (f32, f32, f32) {
     fn upload(&self, gl: &Gl, uniform_location: &UniformLocationId) {
         unsafe { gl.gl.Uniform3f(uniform_location.id, self.0, self.1, self.2) };
+    }
+}
+
+impl UploadableUniform for [u32; 64] {
+    fn upload(&self, gl: &Gl, uniform_location: &UniformLocationId) {
+        unsafe { gl.gl.Uniform1uiv(uniform_location.id, 64, self.as_ptr()) }
     }
 }
 
