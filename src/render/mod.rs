@@ -3,8 +3,8 @@ mod bindings;
 mod buffer;
 pub use buffer::*;
 
-mod display;
-pub use display::*;
+mod surface;
+pub use surface::*;
 
 pub mod gl;
 

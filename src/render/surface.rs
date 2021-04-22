@@ -9,7 +9,7 @@ use glutin::{
 use thiserror::Error;
 
 #[derive(Debug, Error)]
-pub enum DisplayError {
+pub enum SurfaceError {
     #[error("failed to create the glutin window")]
     WindowCreation,
     #[error("failed to make the glutin window current")]
@@ -22,7 +22,7 @@ pub enum DisplayError {
 
 const TEMP_SHADER: &str = include_str!("./shader/chip-8.glsl");
 
-pub struct Display {
+pub struct Surface {
     context: ContextWrapper<PossiblyCurrent, Window>,
     clear_color: (f32, f32, f32),
     gl: gl::Gl,
@@ -31,11 +31,11 @@ pub struct Display {
     indice_count: usize,
 }
 
-impl Display {
+impl Surface {
     pub fn new<T>(
         builder: DisplayBuilder,
         event_loop: &EventLoop<T>,
-    ) -> Result<Self, DisplayError> {
+    ) -> Result<Self, SurfaceError> {
         let title = builder.title.unwrap_or("CHIRP-8".to_string());
         let size = builder.size.unwrap_or((640, 480));
 
@@ -46,11 +46,11 @@ impl Display {
                     .with_inner_size(LogicalSize::new(size.0, size.1)),
                 event_loop,
             )
-            .map_err(|_| DisplayError::WindowCreation)?;
+            .map_err(|_| SurfaceError::WindowCreation)?;
         let context = unsafe {
             context
                 .make_current()
-                .map_err(|_| DisplayError::ContextCurrent)?
+                .map_err(|_| SurfaceError::ContextCurrent)?
         };
 
         let gl = gl::Gl::load_with(|ptr| context.get_proc_address(ptr) as *const _);
@@ -119,10 +119,10 @@ impl Display {
         self.context.window().request_redraw();
     }
 
-    pub fn update(&self) -> Result<(), DisplayError> {
+    pub fn update(&self) -> Result<(), SurfaceError> {
         self.context
             .swap_buffers()
-            .map_err(|_| DisplayError::SwapBuffers)?;
+            .map_err(|_| SurfaceError::SwapBuffers)?;
 
         self.gl.set_clear_color(
             self.clear_color.0,
@@ -174,7 +174,7 @@ impl DisplayBuilder {
         self
     }
 
-    pub fn build<T>(self, event_loop: &EventLoop<T>) -> Result<Display, DisplayError> {
-        Display::new(self, event_loop)
+    pub fn build<T>(self, event_loop: &EventLoop<T>) -> Result<Surface, SurfaceError> {
+        Surface::new(self, event_loop)
     }
 }
