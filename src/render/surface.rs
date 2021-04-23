@@ -33,7 +33,7 @@ pub struct Surface {
 
 impl Surface {
     pub fn new<T>(
-        builder: DisplayBuilder,
+        builder: SurfaceBuilder,
         event_loop: &EventLoop<T>,
     ) -> Result<Self, SurfaceError> {
         let title = builder.title.unwrap_or("CHIRP-8".to_string());
@@ -153,12 +153,12 @@ impl Surface {
     }
 }
 
-pub struct DisplayBuilder {
+pub struct SurfaceBuilder {
     title: Option<String>,
     size: Option<(u32, u32)>,
 }
 
-impl DisplayBuilder {
+impl SurfaceBuilder {
     pub fn new() -> Self {
         Self {
             title: None,
