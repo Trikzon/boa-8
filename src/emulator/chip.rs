@@ -21,9 +21,7 @@ impl Chip {
         }
     }
 
-    pub fn cpu_cycle(&mut self) {
-        todo!();
-    }
+    pub fn cpu_cycle(&mut self) {}
 
     pub fn fetch_instruction(&self) -> u16 {
         let left = self.memory.read(self.registers.pc()) as u16;
@@ -94,73 +92,73 @@ impl Chip {
 
     // --- Instructions ---
 
-    pub fn CLS(&mut self) {
+    fn CLS(&mut self) {
         self.display.clear();
     }
 
-    pub fn RET(&mut self) {}
+    fn RET(&mut self) {}
 
-    pub fn JP_addr(&mut self, address: u16) {}
+    fn JP_addr(&mut self, address: u16) {}
 
-    pub fn CALL_addr(&mut self, address: u16) {}
+    fn CALL_addr(&mut self, address: u16) {}
 
-    pub fn SE_Vx_byte(&mut self, x: u8, byte: u8) {}
+    fn SE_Vx_byte(&mut self, x: u8, byte: u8) {}
 
-    pub fn SNE_Vx_byte(&mut self, x: u8, byte: u8) {}
+    fn SNE_Vx_byte(&mut self, x: u8, byte: u8) {}
 
-    pub fn SE_Vx_Vy(&mut self, x: u8, y: u8) {}
+    fn SE_Vx_Vy(&mut self, x: u8, y: u8) {}
 
-    pub fn LD_Vx_byte(&mut self, x: u8, byte: u8) {}
+    fn LD_Vx_byte(&mut self, x: u8, byte: u8) {}
 
-    pub fn ADD_Vx_byte(&mut self, x: u8, byte: u8) {}
+    fn ADD_Vx_byte(&mut self, x: u8, byte: u8) {}
 
-    pub fn LD_Vx_Vy(&mut self, x: u8, y: u8) {}
+    fn LD_Vx_Vy(&mut self, x: u8, y: u8) {}
 
-    pub fn OR_Vx_Vy(&mut self, x: u8, y: u8) {}
+    fn OR_Vx_Vy(&mut self, x: u8, y: u8) {}
 
-    pub fn AND_Vx_Vy(&mut self, x: u8, y: u8) {}
+    fn AND_Vx_Vy(&mut self, x: u8, y: u8) {}
 
-    pub fn XOR_Vx_VY(&mut self, x: u8, y: u8) {}
+    fn XOR_Vx_VY(&mut self, x: u8, y: u8) {}
 
-    pub fn ADD_Vx_VY(&mut self, x: u8, y: u8) {}
+    fn ADD_Vx_VY(&mut self, x: u8, y: u8) {}
 
-    pub fn SUB_Vx_VY(&mut self, x: u8, y: u8) {}
+    fn SUB_Vx_VY(&mut self, x: u8, y: u8) {}
 
-    pub fn SHR_Vx_Vy(&mut self, x: u8, y: u8) {}
+    fn SHR_Vx_Vy(&mut self, x: u8, y: u8) {}
 
-    pub fn SUBN_Vx_Vy(&mut self, x: u8, y: u8) {}
+    fn SUBN_Vx_Vy(&mut self, x: u8, y: u8) {}
 
-    pub fn SHL_Vx_Vy(&mut self, x: u8, y: u8) {}
+    fn SHL_Vx_Vy(&mut self, x: u8, y: u8) {}
 
-    pub fn SNE_Vx_Vy(&mut self, x: u8, y: u8) {}
+    fn SNE_Vx_Vy(&mut self, x: u8, y: u8) {}
 
-    pub fn LD_I_addr(&mut self, address: u16) {}
+    fn LD_I_addr(&mut self, address: u16) {}
 
-    pub fn JP_V0_addr(&mut self, address: u16) {}
+    fn JP_V0_addr(&mut self, address: u16) {}
 
-    pub fn RND_Vx_byte(&mut self, x: u8, byte: u8) {}
+    fn RND_Vx_byte(&mut self, x: u8, byte: u8) {}
 
-    pub fn DRW_Vx_Vy_n(&mut self, x: u8, y: u8, n: u8) {}
+    fn DRW_Vx_Vy_n(&mut self, x: u8, y: u8, n: u8) {}
 
-    pub fn SKP_Vx(&mut self, x: u8) {}
+    fn SKP_Vx(&mut self, x: u8) {}
 
-    pub fn SKNP_Vx(&mut self, x: u8) {}
+    fn SKNP_Vx(&mut self, x: u8) {}
 
-    pub fn LD_Vx_DT(&mut self, x: u8) {}
+    fn LD_Vx_DT(&mut self, x: u8) {}
 
-    pub fn LD_Vx_K(&mut self, x: u8) {}
+    fn LD_Vx_K(&mut self, x: u8) {}
 
-    pub fn LD_DT_Vx(&mut self, x: u8) {}
+    fn LD_DT_Vx(&mut self, x: u8) {}
 
-    pub fn LD_ST_Vx(&mut self, x: u8) {}
+    fn LD_ST_Vx(&mut self, x: u8) {}
 
-    pub fn ADD_I_Vx(&mut self, x: u8) {}
+    fn ADD_I_Vx(&mut self, x: u8) {}
 
-    pub fn LD_F_Vx(&mut self, x: u8) {}
+    fn LD_F_Vx(&mut self, x: u8) {}
 
-    pub fn LD_B_Vx(&mut self, x: u8) {}
+    fn LD_B_Vx(&mut self, x: u8) {}
 
-    pub fn LD_I_Vx(&mut self, x: u8) {}
+    fn LD_I_Vx(&mut self, x: u8) {}
 
-    pub fn LD_Vx_I(&mut self, x: u8) {}
+    fn LD_Vx_I(&mut self, x: u8) {}
 }
