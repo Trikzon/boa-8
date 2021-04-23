@@ -59,27 +59,28 @@ impl Surface {
 
         shader.bind();
         shader.define_uniform("uPixels")?;
-        let mut pixels = [0; 64];
-        pixels[0] = 0b01111100000000000000000000000000;
-        pixels[1] = 0b00010000000000000000000000000000;
-        pixels[2] = 0b01111100000000000000000000000000;
-        pixels[3] = 0b00000000000000000000000000000000;
-        pixels[4] = 0b01111100000000000000000000000000;
-        pixels[5] = 0b01010100000000000000000000000000;
-        pixels[6] = 0b01000100000000000000000000000000;
-        pixels[7] = 0b00000000000000000000000000000000;
-        pixels[8] = 0b01111100000000000000000000000000;
-        pixels[9] = 0b00000100000000000000000000000000;
-        pixels[10] = 0b00000100000000000000000000000000;
-        pixels[11] = 0b00000000000000000000000000000000;
-        pixels[12] = 0b01111100000000000000000000000000;
-        pixels[13] = 0b00000100000000000000000000000000;
-        pixels[14] = 0b00000100000000000000000000000000;
-        pixels[15] = 0b00000000000000000000000000000000;
-        pixels[16] = 0b01111100000000000000000000000000;
-        pixels[17] = 0b01000100000000000000000000000000;
-        pixels[18] = 0b01111100000000000000000000000000;
-        shader.upload_uniform("uPixels", &pixels)?;
+        let mut display = crate::emulator::Display::new(10, (0.0, 0.0, 0.0), (1.0, 1.0, 1.0));
+        let memory = crate::emulator::Memory::new();
+
+        let mut sprite = [0; 5];
+        for i in 0..5 {
+            sprite[i] = memory.read(((0xA * 5) + i) as u16);
+        }
+        display.draw_sprite(1, 1, &sprite);
+
+        let mut sprite = [0; 5];
+        for i in 0..5 {
+            sprite[i] = memory.read(((0xB * 5) + i) as u16);
+        }
+        display.draw_sprite(7, 2, &sprite);
+
+        let mut sprite = [0; 5];
+        for i in 0..5 {
+            sprite[i] = memory.read(((0xC * 5) + i) as u16);
+        }
+        display.draw_sprite(13, 3, &sprite);
+
+        shader.upload_uniform("uPixels", &display.pixels())?;
         shader.unbind();
 
         let vertices: [f32; 12] = [

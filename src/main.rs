@@ -1,4 +1,5 @@
 #![allow(dead_code)]
+mod emulator;
 mod render;
 
 use crate::render::DisplayBuilder;
