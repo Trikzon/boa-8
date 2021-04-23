@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 mod emulator;
 mod render;
+mod util;
 
 use crate::render::DisplayBuilder;
 use glutin::{

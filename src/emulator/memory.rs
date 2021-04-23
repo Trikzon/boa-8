@@ -1,3 +1,5 @@
+const PROGRAM_OFFSET: u16 = 512;
+
 /// The Chip-8 language is capable of accessing up to 4KB (4,096 bytes) of RAM,
 /// from location 0x000 (0) to 0xFFF (4095). The first 512 bytes, from 0x000
 /// to 0x1FF, are where the original interpreter was located, and should not be
@@ -25,6 +27,7 @@
 /// | Reserved for  |
 /// |  interpreter  |
 /// +---------------+= 0x000 (0) Start of Chip-8 RAM
+#[derive(Debug)]
 pub struct Memory {
     ram: [u8; 4096],
 }
@@ -45,6 +48,8 @@ impl Memory {
     }
 
     pub fn load_rom(&mut self, rom_data: &[u8]) {
-        todo!()
+        for (i, byte) in rom_data.iter().enumerate() {
+            self.write(PROGRAM_OFFSET + (i as u16), *byte);
+        }
     }
 }

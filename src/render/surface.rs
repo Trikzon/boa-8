@@ -60,7 +60,8 @@ impl Surface {
         shader.bind();
         shader.define_uniform("uPixels")?;
         let mut display = crate::emulator::Display::new(10, (0.0, 0.0, 0.0), (1.0, 1.0, 1.0));
-        let memory = crate::emulator::Memory::new();
+        let mut memory = crate::emulator::Memory::new();
+        memory.load_rom(&crate::util::read_binary_file("./roms/test/BC_test.ch8").unwrap());
 
         let mut sprite = [0; 5];
         for i in 0..5 {
