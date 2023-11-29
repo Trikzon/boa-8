@@ -3,7 +3,7 @@ use std::fs::File;
 
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
-    let mut file = File::create("./src/opengl/bindings.rs").unwrap();
+    let mut file = File::create("./src/render/bindings.rs").unwrap();
 
     let registry = Registry::new(
         Api::Gl,
