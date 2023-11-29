@@ -22,11 +22,7 @@ int WIDTH = 64;
 int HEIGHT = 32;
 
 void main() {
-    bool is_bright = bool((uPixels[int(vPixelPos.x * WIDTH)] << int((vPixelPos.y * HEIGHT))) >> HEIGHT - 1);
+    float is_bright = (uPixels[int(vPixelPos.x * WIDTH)] << int((vPixelPos.y * HEIGHT))) >> HEIGHT - 1;
 
-    if (is_bright) {
-        fColor = vec4(1.0, 1.0, 1.0, 1.0);
-    } else {
-        fColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
+    fColor = vec4(is_bright, is_bright, is_bright, 1.0);
 }
