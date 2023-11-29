@@ -14,8 +14,9 @@ pub struct Registers {
     v: [u8; 16],
     i: u16,
     pc: u16, // program counter
-    sp: u8,  // stack pointer
-    stack: [u16; 16],
+    /// CHIP-8 allows for up to 16 levels of nested subroutines, but for
+    /// simplicity we will allow for unlimited.
+    stack: Vec<u16>
 }
 
 impl Registers {
@@ -24,8 +25,7 @@ impl Registers {
             v: [0; 16],
             i: 0,
             pc: 0,
-            sp: 0,
-            stack: [0; 16],
+            stack: Vec::new(),
         }
     }
 
@@ -57,9 +57,27 @@ impl Registers {
         self.pc
     }
 
+    pub fn set_pc(&mut self, value: u16) {
+        self.pc = value;
+    }
+
     pub fn increment_pc(&mut self) {
         self.pc += 2;
     }
 
-    // TODO: Implement the stack.
+    pub fn push_stack(&mut self, value: u16) {
+        // The stack should only contain 16 values at most.
+        if self.stack.len() > 16 {
+            println!("Pushing to overflowed stack of size {}.", self.stack.len());
+        }
+
+        self.stack.push(value);
+    }
+
+    pub fn pop_stack(&mut self) -> u16 {
+        self.stack.pop().unwrap_or_else(|| {
+            println!("Attempted to pop empty stack. Returning 0.");
+            0
+        })
+    }
 }
