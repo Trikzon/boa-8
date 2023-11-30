@@ -45,13 +45,13 @@ impl Display {
 
         for byte in sprite {
             for i in (0..8).rev() {
-                x += 1;
                 let bit = (byte >> i) & 0b00000001;
                 if bit == 1 {
                     if self.draw_pixel(x, y) {
                         collided = true;
                     }
                 }
+                x += 1;
             }
             y += 1;
             x -= 8;

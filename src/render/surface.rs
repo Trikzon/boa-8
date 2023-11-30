@@ -56,32 +56,8 @@ impl Surface {
         let gl = gl::Gl::load_with(|ptr| context.get_proc_address(ptr) as *const _);
 
         let mut shader = ProgramBuilder::new().with_combo(TEMP_SHADER)?.build(&gl)?;
-
         shader.bind();
         shader.define_uniform("uPixels")?;
-        let mut display = crate::emulator::Display::new(10, (0.0, 0.0, 0.0), (1.0, 1.0, 1.0));
-        let mut memory = crate::emulator::Memory::new();
-        memory.load_rom(&crate::util::read_binary_file("./roms/test/BC_test.ch8").unwrap());
-
-        let mut sprite = [0; 5];
-        for i in 0..5 {
-            sprite[i] = memory.read(((0xA * 5) + i) as u16);
-        }
-        display.draw_sprite(1, 1, &sprite);
-
-        let mut sprite = [0; 5];
-        for i in 0..5 {
-            sprite[i] = memory.read(((0xB * 5) + i) as u16);
-        }
-        display.draw_sprite(7, 2, &sprite);
-
-        let mut sprite = [0; 5];
-        for i in 0..5 {
-            sprite[i] = memory.read(((0xC * 5) + i) as u16);
-        }
-        display.draw_sprite(13, 3, &sprite);
-
-        shader.upload_uniform("uPixels", &display.pixels())?;
         shader.unbind();
 
         let vertices: [f32; 12] = [
@@ -136,6 +112,14 @@ impl Surface {
             .clear(&[gl::ClearFlag::COLOR_BUFFER, gl::ClearFlag::DEPTH_BUFFER]);
 
         Ok(())
+    }
+
+    pub fn update_with_display(&mut self, display: &crate::emulator::Display) {
+        self.shader.bind();
+
+        self.shader.upload_uniform("uPixels", &display.pixels()).unwrap();
+
+        self.shader.unbind();
     }
 
     pub fn render(&self) {

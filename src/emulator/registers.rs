@@ -24,7 +24,7 @@ impl Registers {
         Self {
             v: [0; 16],
             i: 0,
-            pc: 0,
+            pc: 0x200,
             stack: Vec::new(),
         }
     }
