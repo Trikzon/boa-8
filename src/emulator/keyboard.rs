@@ -11,12 +11,13 @@ use glutin::event::{ElementState, KeyboardInput, VirtualKeyCode};
 /// This layout must be mapped into various other configurations to fit the
 /// keyboards of today's platforms.
 pub struct Keyboard {
-    keys: [bool; 16]
+    keys: [bool; 16],
+    just_released: Option<u8>,
 }
 
 impl Keyboard {
     pub fn new() -> Self {
-        Self { keys: [false; 16] }
+        Self { keys: [false; 16], just_released: None, }
     }
 
     pub fn process_input(&mut self, input: KeyboardInput) {
@@ -43,6 +44,9 @@ impl Keyboard {
             
             if let Some(key) = key {
                 self.keys[key as usize] = input.state == ElementState::Pressed;
+                if input.state == ElementState::Released {
+                    self.just_released = Some(key);
+                }
             }
         }
     }
@@ -56,12 +60,11 @@ impl Keyboard {
         self.keys[key as usize]
     }
 
-    pub fn find_pressed_key(&self) -> Option<u8> {
-        for key in 0..16 {
-            if self.is_pressed(key) {
-                return Some(key);
-            }
-        }
-        None
+    pub fn just_released(&self) -> Option<u8> {
+        self.just_released
+    }
+
+    pub fn update(&mut self) {
+        self.just_released = None;
     }
 }

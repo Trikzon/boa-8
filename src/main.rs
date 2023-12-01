@@ -35,8 +35,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // chip8.load_rom_from_path(std::path::Path::new("./roms/tests/2-ibm-logo.ch8")).unwrap();
     // chip8.load_rom_from_path(std::path::Path::new("./roms/tests/3-corax+.ch8")).unwrap();
     // chip8.load_rom_from_path(std::path::Path::new("./roms/tests/4-flags.ch8")).unwrap();
-    chip8.load_rom_from_path(std::path::Path::new("./roms/tests/5-quirks.ch8")).unwrap();
-    // chip8.load_rom_from_path(std::path::Path::new("./roms/tests/6-keypad.ch8")).unwrap();
+    // chip8.load_rom_from_path(std::path::Path::new("./roms/tests/5-quirks.ch8")).unwrap();
+    chip8.load_rom_from_path(std::path::Path::new("./roms/tests/6-keypad.ch8")).unwrap();
     // chip8.load_rom_from_path(std::path::Path::new("./roms/tests/7-beep.ch8")).unwrap();
 
     let mut last_cycle = SystemTime::now();

@@ -45,7 +45,7 @@ impl Chip {
 
         if !self.paused() {
             self.timers.update();
-            // TODO: Process keyboard input.
+            self.keyboard.update();
         }
 
     }
@@ -514,7 +514,7 @@ impl Chip {
             self.debug_println_instruction(format!("LD   V{:01x}, K", x), "Wait for a key press, store the value of the key in Vx.");
         }
 
-        match self.keyboard.find_pressed_key() {
+        match self.keyboard.just_released() {
             Some(key) => {
                 self.waiting_for_key = false;
                 self.registers.set_v(x, key)
