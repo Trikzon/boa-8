@@ -28,7 +28,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // chip8.load_rom_from_path(std::path::Path::new("./roms/SQRT_Test_[Sergey_Naydenov,_2010].ch8")).unwrap();
     // chip8.load_rom_from_path(std::path::Path::new("./roms/Trip8_Demo_(2008)_[Revival_Studios].ch8")).unwrap();
     // chip8.load_rom_from_path(std::path::Path::new("./roms/Tetris [Fran Dachille, 1991].ch8")).unwrap();
-    // chip8.load_rom_from_path(std::path::Path::new("./roms/Pong (1 player).ch8")).unwrap();
+    chip8.load_rom_from_path(std::path::Path::new("./roms/Pong (1 player).ch8")).unwrap();
 
     // Test Suite from https://github.com/Timendus/chip8-test-suite.
     // chip8.load_rom_from_path(std::path::Path::new("./roms/tests/1-chip8-logo.ch8")).unwrap();
@@ -36,7 +36,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // chip8.load_rom_from_path(std::path::Path::new("./roms/tests/3-corax+.ch8")).unwrap();
     // chip8.load_rom_from_path(std::path::Path::new("./roms/tests/4-flags.ch8")).unwrap();
     // chip8.load_rom_from_path(std::path::Path::new("./roms/tests/5-quirks.ch8")).unwrap();
-    chip8.load_rom_from_path(std::path::Path::new("./roms/tests/6-keypad.ch8")).unwrap();
+    // chip8.load_rom_from_path(std::path::Path::new("./roms/tests/6-keypad.ch8")).unwrap();
     // chip8.load_rom_from_path(std::path::Path::new("./roms/tests/7-beep.ch8")).unwrap();
 
     let mut last_cycle = SystemTime::now();

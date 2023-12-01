@@ -6,6 +6,7 @@ edition = "2018"
 
 [dependencies]
 bitflags = "1.2.1"
+ears = "0.8.0"
 glutin = "0.26.0"
 rand = "0.8.5"
 thiserror = "1.0.24"

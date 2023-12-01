@@ -1,5 +1,8 @@
 #![allow(non_snake_case)]
+use std::borrow::BorrowMut;
+
 use crate::emulator::{Display, Keyboard, Memory, Registers, Timers};
+use ears::AudioController;
 use rand::Rng;
 
 const INSTRUCTIONS_PER_CYCLE: usize = 10;
@@ -10,6 +13,7 @@ pub struct Chip {
     keyboard: Keyboard,
     display: Display,
     timers: Timers,
+    sound: Option<ears::Sound>,
     paused: bool,
     waiting_for_key: bool,
     first_instruction: bool,
@@ -17,6 +21,17 @@ pub struct Chip {
 
 impl Chip {
     pub fn new() -> Self {
+        let sound = match ears::Sound::new("./sound/440hz.wav") {
+            Ok(mut sound) => {
+                sound.set_looping(true);
+                Some(sound)
+            },
+            Err(err) => {
+                println!("{}", err);
+                None
+            }
+        };
+
         Self {
             memory: Memory::new(),
             registers: Registers::new(),
@@ -24,6 +39,7 @@ impl Chip {
             // TODO: Command line arguments
             display: Display::new(10, (0.0, 0.0, 0.0), (1.0, 1.0, 1.0)),
             timers: Timers::new(),
+            sound,
             paused: false,
             waiting_for_key: false,
             first_instruction: true,
@@ -41,7 +57,13 @@ impl Chip {
             self.first_instruction = false;
         }
 
-        // TODO: Play sound if sound timer is > 0.
+        if let Some(sound) = self.sound.borrow_mut() {
+            if self.timers.sound() > 0  && !sound.is_playing() {
+                sound.play();
+            } else if self.timers.sound() == 0 && sound.is_playing() {
+                sound.stop();
+            }
+        }
 
         if !self.paused() {
             self.timers.update();
