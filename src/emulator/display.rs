@@ -43,6 +43,8 @@ impl Display {
     pub fn draw_sprite(&mut self, mut x: u8, mut y: u8, sprite: &[u8]) -> bool {
         let mut collided = false;
 
+        let origin_x = x;
+        let origin_y = y;
         for byte in sprite {
             for i in (0..8).rev() {
                 let bit = (byte >> i) & 0b00000001;
@@ -52,9 +54,19 @@ impl Display {
                     }
                 }
                 x += 1;
+
+                // If the sprite starts at the right and gets cut off, break.
+                if origin_x < WIDTH as u8 && x > WIDTH as u8 {
+                    break;
+                }
             }
             y += 1;
-            x -= 8;
+            x = origin_x;
+
+            // If the sprite starts at the bottom and gets cut off, break.
+            if origin_y < HEIGHT as u8 && y > HEIGHT as u8 {
+                break;
+            }
         }
         collided
     }
